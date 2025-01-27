@@ -42,6 +42,26 @@ namespace Adaptive1.Controllers
 
             return Ok(new { Message = "User saved!" });
         }
+        [HttpGet("read-users")]
+        public IActionResult ReadUsers()
+        {
+            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Users.json");
+
+            if (!System.IO.File.Exists(filePath))
+            {
+                return NotFound(new { Message = "no file" });
+            }
+
+            var jsonData = System.IO.File.ReadAllText(filePath);
+            var users = JsonConvert.DeserializeObject<List<User>>(jsonData);
+
+            if (users == null || !users.Any())
+            {
+                return Ok(new { Message = "list of users is empty" });
+            }
+
+            return Ok(users);
+        }
 
         [HttpGet("regex")]
         public IActionResult RegexExample(string input)
